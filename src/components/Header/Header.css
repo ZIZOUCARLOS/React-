@@ -1,0 +1,45 @@
+/* src/components/Header.css */
+.app-header {
+background-color: #20232a;
+padding: 15px 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid #3a3a3a;
+}
+
+.app-header h1 {
+margin: 0;
+}
+
+/* Estilo para el enlace del título del header */
+.app-header-title-link {
+color: #61dafb; /* Color principal */
+text-decoration: none;
+font-size: 1.8em;
+}
+
+.app-header-title-link:hover {
+text-decoration: none; /* Quitamos el subrayado al pasar el ratón */
+opacity: 0.8; /* Pequeño efecto visual */
+}
+
+.app-header nav ul {
+list-style: none;
+padding: 0;
+margin: 0;
+display: flex;
+gap: 25px; /* Espacio entre los elementos del menú */
+}
+
+/* Estilo para los enlaces de navegación */
+.app-header-nav-link {
+color: white; /* Color blanco */
+text-decoration: none;
+transition: color 0.3s ease; /* Transición suave para el color */
+}
+
+.app-header-nav-link:hover {
+color: #61dafb; /* Cambia de color al pasar el ratón */
+text-decoration: none; /* Aseguramos que no se subraye, aunque global lo haga */
+}

@@ -1,0 +1,30 @@
+[
+{ 
+  "id": "1", 
+  "name": "Zapatillas", 
+  "price": 75.00, 
+  "description": "Ligeras y con estilo.", 
+  "image": "/imagenes/zapatillas.png" 
+},
+{ 
+  "id": "2", 
+  "name": "Camiseta", 
+  "price": 20.00, 
+  "description": "100% algodón.", 
+  "image": "/imagenes/camiseta.png" 
+},
+{ 
+  "id": "3", 
+  "name": "Mochila", 
+  "price": 50.00, 
+  "description": "Espaciosa.", 
+  "image": "/imagenes/mochila.png" 
+},
+{ 
+  "id": "4", 
+  "name": "Auriculares", 
+  "price": 45.00, 
+  "description": "Sonido HD.", 
+  "image": "/imagenes/auriculares.jpg" 
+}
+]

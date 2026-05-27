@@ -1,0 +1,147 @@
+
+.cart-container {
+max-width: 900px;
+margin: 40px auto;
+padding: 30px;
+border: 1px solid #444;
+border-radius: 10px;
+background-color: #333;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+color: white;
+}
+
+/* Título del carrito */
+.cart-title {
+text-align: center;
+color: #61dafb;
+font-size: 2.5em;
+margin-bottom: 40px;
+}
+
+.cart-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid #444;
+padding: 15px 0;
+margin-bottom: 15px;
+}
+
+.cart-item:last-child {
+border-bottom: none;
+margin-bottom: 0;
+}
+
+.cart-item-info {
+display: flex;
+align-items: center;
+gap: 20px;
+}
+
+.cart-item-name {
+margin: 0;
+color: white;
+font-size: 1.2em;
+}
+
+.cart-item-quantity {
+margin: 5px 0 0 0;
+color: #bbb;
+font-size: 0.9em;
+}
+
+.cart-item-actions {
+text-align: right;
+display: flex; 
+align-items: center;
+gap: 15px;
+}
+
+.cart-item-price {
+margin: 0;
+font-size: 1.3em;
+font-weight: bold;
+color: #61dafb;
+}
+
+.cart-item-remove-btn {
+background-color: #dc3545;
+color: white;
+border: none;
+padding: 8px 15px;
+border-radius: 5px;
+cursor: pointer;
+}
+
+/* Resumen del carrito y botones de acción */
+.cart-summary {
+border-top: 1px solid #444;
+padding-top: 20px;
+margin-top: 30px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.cart-total {
+font-size: 2em;
+font-weight: bold;
+color: white;
+text-align: right;
+margin: 0;
+}
+
+.cart-total span {
+color: #61dafb;
+}
+
+.cart-actions-bottom {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.cart-clear-btn {
+background-color: #ffc107;
+color: #333;
+font-size: 1.1em;
+padding: 12px 25px;
+}
+
+.cart-continue-shopping-link {
+background-color: #007bff;
+color: white;
+font-size: 1.1em;
+padding: 12px 25px;
+border-radius: 5px;
+text-decoration: none;
+}
+
+/* Estilos para carrito vacío */
+.cart-empty-container {
+text-align: center;
+padding: 80px 20px;
+color: white;
+}
+
+.cart-empty-title {
+color: #61dafb;
+font-size: 3em;
+margin-bottom: 20px;
+}
+
+.cart-empty-message {
+font-size: 1.2em;
+color: #bbb;
+margin-bottom: 40px;
+}
+
+.cart-empty-link {
+background-color: #28a745;
+color: white;
+padding: 15px 30px;
+border-radius: 8px;
+font-size: 1.5em;
+text-decoration: none;
+display: inline-block;
+}
