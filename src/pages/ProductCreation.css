@@ -1,0 +1,88 @@
+/* src/pages/ProductCreation.css */
+
+.product-creation-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background-color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.product-creation-title {
+  color: #61dafb;
+  font-size: 2em;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.product-creation-form .form-group {
+  margin-bottom: 20px;
+}
+
+.product-creation-form label {
+  display: block;
+  color: #ccc;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+
+.product-creation-form .form-control {
+  width: calc(100% - 20px); /* Ajustar padding */
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background-color: #444;
+  color: white;
+  font-size: 1em;
+}
+
+.product-creation-form textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.product-creation-form .form-control:focus {
+  outline: none;
+  border-color: #61dafb;
+  box-shadow: 0 0 0 3px rgba(97, 218, 251, 0.3);
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #218838;
+}
+
+.message {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
