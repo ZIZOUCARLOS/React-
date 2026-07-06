@@ -1,6 +1,6 @@
-/* src/pages/ProductCreation.css */
+/* src/pages/ProductForm.css (Antes ProductCreation.css) */
 
-.product-creation-container {
+.product-form-container {
   max-width: 600px;
   margin: 50px auto;
   padding: 30px;
@@ -10,25 +10,25 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.product-creation-title {
+.product-form-title {
   color: #61dafb;
   font-size: 2em;
   text-align: center;
   margin-bottom: 30px;
 }
 
-.product-creation-form .form-group {
+.product-form .form-group {
   margin-bottom: 20px;
 }
 
-.product-creation-form label {
+.product-form label {
   display: block;
   color: #ccc;
   font-size: 1.1em;
   margin-bottom: 8px;
 }
 
-.product-creation-form .form-control {
+.product-form .form-control {
   width: calc(100% - 20px); /* Ajustar padding */
   padding: 10px;
   border: 1px solid #555;
@@ -38,33 +38,53 @@
   font-size: 1em;
 }
 
-.product-creation-form textarea.form-control {
+.product-form textarea.form-control {
   min-height: 100px;
   resize: vertical;
 }
 
-.product-creation-form .form-control:focus {
+.product-form .form-control:focus {
   outline: none;
   border-color: #61dafb;
   box-shadow: 0 0 0 3px rgba(97, 218, 251, 0.3);
 }
 
-.submit-btn {
+.product-form .error-text {
+  color: #ff6347; /* Tomate */
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.submit-btn, .cancel-edit-btn {
   display: block;
   width: 100%;
   padding: 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
   border-radius: 5px;
   font-size: 1.2em;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 20px;
+  margin-top: 15px;
+  border: none;
+  font-weight: bold;
+}
+
+.submit-btn {
+  background-color: #28a745; /* Verde */
+  color: white;
 }
 
 .submit-btn:hover {
   background-color: #218838;
+}
+
+.cancel-edit-btn {
+  background-color: #007bff; /* Azul */
+  color: white;
+  margin-top: 10px;
+}
+
+.cancel-edit-btn:hover {
+  background-color: #0056b3;
 }
 
 .message {

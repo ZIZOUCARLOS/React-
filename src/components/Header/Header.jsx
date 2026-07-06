@@ -8,10 +8,10 @@ import './Header.css'; // Si Header.jsx está en src/components/Header/, entonce
 function Header() {
   return (
     <header className="app-header">
-      <h1>
-        <Link to="/" className="app-header-title-link">Mi tienda Online</Link>
-      </h1>
-      <nav>
+      <Link to="/" className="app-logo">
+        <h1>Mi tienda Online</h1>
+      </Link>
+      <nav className="app-nav"> {/* Añadí className="app-nav" aquí para el CSS del Header */}
         <ul>
           <li>
             <NavLink 
@@ -29,7 +29,15 @@ function Header() {
               Productos
             </NavLink>
           </li>
-          {/* <--- ¡NUEVO ENLACE! */}
+          {/* <--- ¡NUEVOS ENLACES DE GESTIÓN! */}
+          <li>
+            <NavLink 
+              to="/admin/productos" // <--- Este es el nuevo enlace para la gestión de productos
+              className={({ isActive }) => (isActive ? 'app-header-nav-link active-link' : 'app-header-nav-link')}
+            >
+              Gestion Productos
+            </NavLink>
+          </li>
           <li>
             <NavLink 
               to="/admin/cupones" 

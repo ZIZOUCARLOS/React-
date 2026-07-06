@@ -8,8 +8,9 @@ import ItemListContainer from './components/ItemListContainer/ItemListContainer'
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail'; 
 import Cart from './pages/Cart';
-import ProductCreation from './pages/ProductCreation'; // Importación correcta
-import GestionCupones from './pages/GestionCupones'; // Importación correcta
+// import ProductCreation from './pages/ProductCreation'; // Ya no lo necesitamos, usamos ProductManagementPage
+import ProductManagementPage from './pages/ProductManagementPage'; // <--- Importamos la nueva página
+import GestionCupones from './pages/GestionCupones';
 
 function App() {
   return (
@@ -23,10 +24,11 @@ function App() {
         
         <Route path="carrito" element={<Cart />} />
 
-        {/* <--- ¡AÑADIMOS ESTAS RUTAS! */}
-        <Route path="crear-producto" element={<ProductCreation />} />
+        {/* <--- ¡NUEVAS RUTAS Y CAMBIOS! */}
+        {/* La gestión de productos ahora incluye creación, edición y eliminación */}
+        <Route path="admin/productos" element={<ProductManagementPage />} /> 
         <Route path="admin/cupones" element={<GestionCupones />} />
-        {/* <--- FIN DE RUTAS AÑADIDAS */}
+        {/* <--- FIN DE CAMBIOS */}
 
         <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '50px', color: 'red' }}>404 - Página No Encontrada</h2>} />
       </Route>
