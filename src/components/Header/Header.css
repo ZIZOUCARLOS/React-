@@ -1,45 +1,112 @@
-/* src/components/Header.css */
+/* src/components/Header/Header.css */
 .app-header {
-background-color: #20232a;
-padding: 15px 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 1px solid #3a3a3a;
+  background-color: #20232a; /* Fondo oscuro */
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between; /* Espacio entre el logo, nav y cart */
+  align-items: center;
+  border-bottom: 1px solid #3a3a3a;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
 }
 
-.app-header h1 {
-margin: 0;
+.app-logo h1 {
+  margin: 0;
 }
 
-/* Estilo para el enlace del título del header */
 .app-header-title-link {
-color: #61dafb; /* Color principal */
-text-decoration: none;
-font-size: 1.8em;
+  color: #61dafb; /* Color principal */
+  text-decoration: none;
+  font-size: 1.8em;
+  font-weight: bold;
 }
 
 .app-header-title-link:hover {
-text-decoration: none; /* Quitamos el subrayado al pasar el ratón */
-opacity: 0.8; /* Pequeño efecto visual */
+  opacity: 0.8;
 }
 
-.app-header nav ul {
-list-style: none;
-padding: 0;
-margin: 0;
-display: flex;
-gap: 25px; /* Espacio entre los elementos del menú */
+.app-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex; /* Para que los enlaces estén en línea */
+  gap: 1.5rem; /* Espacio entre los elementos del menú */
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+  justify-content: center; /* Centra los elementos si se envuelven */
 }
 
-/* Estilo para los enlaces de navegación */
 .app-header-nav-link {
-color: white; /* Color blanco */
-text-decoration: none;
-transition: color 0.3s ease; /* Transición suave para el color */
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding: 0.5rem 0; /* Añadir padding vertical para un mejor clic */
 }
 
 .app-header-nav-link:hover {
-color: #61dafb; /* Cambia de color al pasar el ratón */
-text-decoration: none; /* Aseguramos que no se subraye, aunque global lo haga */
+  color: #61dafb;
+  text-decoration: none;
+}
+
+.app-header-nav-link.active-link {
+  color: #61dafb;
+  font-weight: bold;
+  border-bottom: 2px solid #61dafb;
+  padding-bottom: 3px;
+}
+
+/* Estilos para los elementos de autenticación/usuario */
+.user-info {
+  color: #61dafb;
+  font-weight: bold;
+  padding: 0.5rem 0;
+  font-size: 1.1em;
+  display: flex; /* Para que se alinee bien */
+  align-items: center;
+}
+
+.logout-btn {
+  background-color: #dc3545; /* Rojo */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+  display: flex; /* Para que se alinee bien */
+  align-items: center;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+/* Ajustes para CartWidget para que se alinee */
+.cart-widget {
+  margin-left: 1rem; /* Espacio a la izquierda del carrito */
+}
+
+/* Media Queries para Responsividad del Header */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column; /* Apila el logo, nav y cart */
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+  }
+
+  .app-nav {
+    width: 100%; /* La navegación ocupa todo el ancho */
+    margin-top: 15px; /* Espacio superior */
+  }
+
+  .app-nav ul {
+    flex-direction: column; /* Apila los enlaces de navegación */
+    align-items: flex-start; /* Alinea los enlaces a la izquierda */
+    gap: 10px; /* Menor espacio entre enlaces */
+  }
+
+  .cart-widget {
+    margin-top: 15px;
+    margin-left: 0;
+    width: 100%;
+    text-align: right;
+  }
 }

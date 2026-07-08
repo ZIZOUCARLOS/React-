@@ -1,17 +1,33 @@
 // src/components/Header/Header.jsx
 
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom'; // Usamos NavLink en lugar de Link para la navegación
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import CartWidget from '../CartWidget/CartWidget'; 
-import './Header.css'; // Si Header.jsx está en src/components/Header/, entonces el CSS está en la misma carpeta
+import './Header.css'; // Asegúrate de que esta ruta sea correcta para tu Header.css
+import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 function Header() {
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.info("Sesión cerrada correctamente.");
+      navigate('/login');
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      toast.error("Error al cerrar sesión. Intenta de nuevo.");
+    }
+  };
+
   return (
     <header className="app-header">
       <Link to="/" className="app-logo">
         <h1>Mi tienda Online</h1>
       </Link>
-      <nav className="app-nav"> {/* Añadí className="app-nav" aquí para el CSS del Header */}
+      <nav className="app-nav"> {/* <--- ¡Asegúrate de que este className="app-nav" esté aquí! */}
         <ul>
           <li>
             <NavLink 
@@ -29,10 +45,9 @@ function Header() {
               Productos
             </NavLink>
           </li>
-          {/* <--- ¡NUEVOS ENLACES DE GESTIÓN! */}
           <li>
             <NavLink 
-              to="/admin/productos" // <--- Este es el nuevo enlace para la gestión de productos
+              to="/admin/productos" 
               className={({ isActive }) => (isActive ? 'app-header-nav-link active-link' : 'app-header-nav-link')}
             >
               Gestion Productos
@@ -46,6 +61,40 @@ function Header() {
               Gestion Cupones
             </NavLink>
           </li>
+          
+          {/* <--- ENLACES DE AUTENTICACIÓN / CERRAR SESIÓN */}
+          {!currentUser ? (
+            <>
+              <li>
+                <NavLink 
+                  to="/login" 
+                  className={({ isActive }) => (isActive ? 'app-header-nav-link active-link' : 'app-header-nav-link')}
+                >
+                  Iniciar Sesión
+                </NavLink>
+              </li>
+              <li>
+                <NavLink 
+                  to="/signup" 
+                  className={({ isActive }) => (isActive ? 'app-header-nav-link active-link' : 'app-header-nav-link')}
+                >
+                  Registrarse
+                </NavLink>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="user-info">
+                {currentUser.email}
+              </li>
+              <li>
+                <button onClick={handleLogout} className="logout-btn">
+                  Cerrar Sesión
+                </button>
+              </li>
+            </>
+          )}
+          {/* --- FIN ENLACES DE AUTENTICACIÓN / CERRAR SESIÓN --- */}
         </ul>
       </nav>
       <CartWidget />
