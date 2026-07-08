@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase/config';
-import { collection, addDoc, getDocs, doc, deleteDoc } from 'firebase/firestore'; // Importamos deleteDoc
-import './GestionCupones.css'; // Estilos para la gestión de cupones
+import { collection, addDoc, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import './GestionCupones.css';
+import { toast } from 'react-toastify'; // <--- Importamos toast
 
 function GestionCupones() {
   const [cupones, setCupones] = useState([]);
@@ -12,7 +13,7 @@ function GestionCupones() {
 
   const [codigo, setCodigo] = useState('');
   const [porcentaje, setPorcentaje] = useState('');
-  const [mensajeFormulario, setMensajeFormulario] = useState('');
+  // const [mensajeFormulario, setMensajeFormulario] = useState(''); // Ya no lo necesitamos
 
   // Función para cargar los cupones desde Firebase
   const fetchCupones = async () => {
@@ -28,55 +29,53 @@ function GestionCupones() {
       setCupones(cuponesList);
     } catch (err) {
       console.error("Error al cargar los cupones:", err);
+      toast.error("No se pudieron cargar los cupones."); // <--- Usamos toast
       setError("No se pudieron cargar los cupones.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Cargar cupones al montar el componente
   useEffect(() => {
     fetchCupones();
-  }, []); // Se ejecuta solo una vez al montar
+  }, []);
 
-  // Manejar el envío del formulario para crear un cupón
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMensajeFormulario('');
+    // setMensajeFormulario(''); // Limpiamos el mensaje
 
     if (!codigo || !porcentaje || isNaN(porcentaje) || parseFloat(porcentaje) <= 0 || parseFloat(porcentaje) > 100) {
-      setMensajeFormulario("Por favor, introduce un código y un porcentaje válido (1-100).");
+      toast.error("Por favor, introduce un código y un porcentaje válido (1-100)."); // <--- Usamos toast
       return;
     }
 
     try {
       const cuponesCollection = collection(db, 'cupones');
       await addDoc(cuponesCollection, {
-        codigo: codigo.toUpperCase(), // Guardamos el código en mayúsculas
+        codigo: codigo.toUpperCase(),
         porcentaje: parseFloat(porcentaje)
       });
-      setMensajeFormulario("Cupón creado con éxito.");
+      toast.success("Cupón creado con éxito."); // <--- Usamos toast
       setCodigo('');
       setPorcentaje('');
       fetchCupones(); // Volvemos a cargar los cupones para actualizar la lista
     } catch (err) {
       console.error("Error al crear el cupón:", err);
-      setMensajeFormulario("Error al crear el cupón.");
+      toast.error("Error al crear el cupón. Intenta de nuevo."); // <--- Usamos toast
     }
   };
 
-  // Manejar la eliminación de un cupón
   const handleDelete = async (id, codigoCupone) => {
     const confirmacion = window.confirm(`¿Está seguro de eliminar el cupón "${codigoCupone}"? Esta acción es irreversible.`);
     if (confirmacion) {
       try {
         const cuponDoc = doc(db, 'cupones', id);
         await deleteDoc(cuponDoc);
-        setMensajeFormulario(`Cupón "${codigoCupone}" eliminado con éxito.`);
+        toast.success(`Cupón "${codigoCupone}" eliminado con éxito.`); // <--- Usamos toast
         fetchCupones(); // Volvemos a cargar los cupones para actualizar la lista
       } catch (err) {
         console.error("Error al eliminar el cupón:", err);
-        setMensajeFormulario("Error al eliminar el cupón.");
+        toast.error("Error al eliminar el cupón."); // <--- Usamos toast
       }
     }
   };
@@ -113,7 +112,8 @@ function GestionCupones() {
           </div>
           <button type="submit" className="gestion-submit-btn">Crear Cupón</button>
         </form>
-        {mensajeFormulario && <p className={`gestion-message ${mensajeFormulario.includes('éxito') ? 'success' : 'error'}`}>{mensajeFormulario}</p>}
+        {/* Ya no necesitamos un mensaje local, Toastify lo maneja */}
+        {/* {mensajeFormulario && <p className={`gestion-message ${mensajeFormulario.includes('éxito') ? 'success' : 'error'}`}>{mensajeFormulario}</p>} */}
       </div>
 
       <div className="gestion-list-section">

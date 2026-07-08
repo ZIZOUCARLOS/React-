@@ -1,101 +1,184 @@
-// // src/components/ItemListContainer/ItemListContainer.jsx
-
-// import React, { useEffect, useState } from 'react';
-// import ItemList from '../ItemList/ItemList';
-
-// function ItemListContainer({ title = "Nuestros Productos" }) {
-//   const [products, setProducts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     setLoading(true);
-//     setError(null); 
-
-//     fetch('/data/productos.json') 
-//       .then(response => {
-//         if (!response.ok) {
-//           throw new Error('Error al cargar los productos. Código: ' + response.status);
-//         }
-//         return response.json();
-//       })
-//       .then(data => {
-//         setProducts(data);
-//       })
-//       .catch(err => {
-//         console.error("Hubo un error al obtener los productos:", err);
-//         setError("No se pudieron cargar los productos. Por favor, intenta de nuevo más tarde."); // Guardamos el error
-//       })
-//       .finally(() => {
-//         setLoading(false);
-//       });
-//   }, []); // El array vacío [] asegura que este efecto se ejecute solo una vez al montar
-
-//   // Renderizado condicional basado en los estados de loading y error
-//   if (loading) return <p style={{ textAlign: 'center', color: '#61dafb', fontSize: '1.2em', marginTop: '50px' }}>Cargando productos...</p>;
-//   if (error) return <p style={{ textAlign: 'center', color: 'red', fontSize: '1.2em', marginTop: '50px' }}>Error: {error}</p>;
-
-//   return (
-//     <section style={{ padding: '20px 0' }}>
-//       <h2 style={{ textAlign: 'center', color: '#61dafb', fontSize: '2em', marginBottom: '30px' }}>{title}</h2>
-//       <ItemList products={products} /> {/* Pasamos los productos a ItemList para que los muestre */}
-//     </section>
-//   );
-// }
-
-// export default ItemListContainer;
-// // //src/components/ItemListContainer.jsx
-
 // src/components/ItemListContainer/ItemListContainer.jsx
 
 import React, { useEffect, useState } from 'react';
-import ItemList from '../ItemList/ItemList'; // Ruta relativa a la carpeta ItemList
-import { db } from '../../firebase/config'; // <--- Importamos nuestra instancia de la base de datos de Firebase
-import { collection, getDocs } from 'firebase/firestore'; // <--- Importamos las funciones necesarias de Firestore
+import Item from '../Item/Item';
+import { db } from '../../firebase/config';
+import { collection, getDocs, query, limit, startAfter } from 'firebase/firestore'; // Añadimos query, limit, startAfter
+import { Container, Row, Col, Form, Spinner, Button, Alert } from 'react-bootstrap'; // Añadimos Spinner, Button, Alert
+import { Helmet } from 'react-helmet-async';
+import { FaSearch } from 'react-icons/fa';
+
+// Definimos cuántos productos cargar por página
+const PRODUCTOS_POR_PAGINA = 6; // Puedes ajustar este número
 
 function ItemListContainer({ title = "Nuestros Productos" }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Estados para la paginación
+  const [loadingMore, setLoadingMore] = useState(false); // Para el spinner de "Cargar más"
+  const [lastVisible, setLastVisible] = useState(null); // Último documento visible para la paginación
+  const [hasMore, setHasMore] = useState(true); // Indica si hay más productos para cargar
+
+  // Función para obtener los productos iniciales
+  const fetchInitialProducts = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const productsCollectionRef = collection(db, 'productos');
+      // Consulta para los primeros PRODUCTOS_POR_PAGINA
+      const q = query(productsCollectionRef, limit(PRODUCTOS_POR_PAGINA));
+      const snapshot = await getDocs(q);
+
+      const productsData = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }));
+      setProducts(productsData);
+
+      // Guardamos el último documento visible para la siguiente paginación
+      const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+      setLastVisible(lastDoc);
+      // Verificamos si hay más productos (si cargamos menos de la cantidad por página, es que no hay más)
+      setHasMore(snapshot.docs.length === PRODUCTOS_POR_PAGINA);
+
+    } catch (err) {
+      console.error("Error al cargar los productos de Firebase:", err);
+      setError("No se pudieron cargar los productos de Firebase. Por favor, intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para obtener más productos (siguientes páginas)
+  const fetchMoreProducts = async () => {
+    if (!hasMore || loadingMore) return; // Si no hay más o ya está cargando, no hacer nada
+
+    setLoadingMore(true);
+    try {
+      const productsCollectionRef = collection(db, 'productos');
+      // Consulta: empezar después del último documento visible, y limitar
+      const q = query(productsCollectionRef, startAfter(lastVisible), limit(PRODUCTOS_POR_PAGINA));
+      const snapshot = await getDocs(q);
+
+      const newProductsData = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }));
+      setProducts(prevProducts => [...prevProducts, ...newProductsData]); // Añadimos los nuevos productos
+      
+      const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+      setLastVisible(lastDoc);
+      setHasMore(snapshot.docs.length === PRODUCTOS_POR_PAGINA); // Si cargamos menos, no hay más
+
+    } catch (err) {
+      console.error("Error al cargar más productos de Firebase:", err);
+      setError("Error al cargar más productos.");
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // Función para volver a la primera página (Ver menos)
+  const showLessProducts = () => {
+    fetchInitialProducts(); // Cargar solo los productos iniciales
+    window.scrollTo(0, 0); // Opcional: desplazar la vista al inicio de la página
+  };
 
   useEffect(() => {
-    setLoading(true); // Iniciamos el estado de carga
-    setError(null); // Limpiamos cualquier error previo
+    fetchInitialProducts();
+  }, []); // Se ejecuta solo una vez al montar
 
-    // 1. Creamos una referencia a la colección de productos en Firestore
-    // ¡IMPORTANTE! Asegúrate de que 'productos' coincida exactamente con el nombre de tu colección en la consola de Firebase.
-    // Según tu screenshot, tu colección se llama 'productos' (en minúsculas).
-    const productsCollectionRef = collection(db, 'productos'); 
-
-    // 2. Obtenemos los documentos de esa colección de forma asíncrona
-    getDocs(productsCollectionRef)
-      .then(snapshot => { // 'snapshot' contiene la respuesta de Firestore
-        // 3. Procesamos los datos:
-        // 'snapshot.docs' es un array de documentos de Firestore.
-        // Mapeamos cada documento para extraer sus datos y el ID que Firebase le asigna.
-        const productsFromFirestore = snapshot.docs.map(doc => ({
-          ...doc.data(), // doc.data() devuelve los campos del documento (name, price, etc.)
-          id: doc.id     // doc.id devuelve el ID único generado por Firebase para este documento
-        }));
-        setProducts(productsFromFirestore); // Actualizamos el estado con los productos de Firebase
-      })
-      .catch(err => {
-        console.error("Error al cargar los productos de Firebase:", err);
-        setError("No se pudieron cargar los productos de Firebase. Por favor, intenta de nuevo.");
-      })
-      .finally(() => {
-        setLoading(false); // Finalizamos el estado de carga, haya éxito o error
-      });
-  }, []); // El array vacío [] asegura que este efecto se ejecute solo una vez al montar
+  // Lógica de filtrado de productos (se aplica sobre los productos YA CARGADOS)
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) return <p style={{ textAlign: 'center', color: '#61dafb', fontSize: '1.2em' }}>Cargando productos...</p>;
   if (error) return <p style={{ textAlign: 'center', color: 'red', fontSize: '1.2em' }}>Error: {error}</p>;
 
   return (
-    <section style={{ padding: '20px 0' }}>
+    <Container className="mt-4">
+      <Helmet>
+        <title>{title} | Mi Tienda Online</title>
+        <meta name="description" content="Descubre nuestra gran variedad de productos de alta calidad." />
+        <meta name="keywords" content="productos, e-commerce, tienda online, comprar" />
+      </Helmet>
+
       <h2 style={{ textAlign: 'center', color: '#61dafb', fontSize: '2em', marginBottom: '30px' }}>{title}</h2>
-      <ItemList products={products} /> {/* Pasamos los productos a ItemList para que los muestre */}
-    </section>
+      
+      {/* Barra de Búsqueda */}
+      <Row className="mb-4 justify-content-center">
+        <Col xs={12} md={8} lg={6}>
+          <Form className="d-flex">
+            <div className="input-group">
+              <span className="input-group-text"><FaSearch /></span>
+              <Form.Control
+                type="text"
+                placeholder="Buscar productos..."
+                className="me-2"
+                aria-label="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </Form>
+        </Col>
+      </Row>
+
+      {/* Listado de Productos */}
+      <Row>
+        {filteredProducts.length === 0 && !loading && !error ? (
+          <Col xs={12} className="text-center">
+            <p style={{ color: '#bbb', fontSize: '1.2em' }}>No se encontraron productos que coincidan con la búsqueda.</p>
+          </Col>
+        ) : (
+          filteredProducts.map(product => (
+            <Col key={product.id} xs={12} md={6} lg={4} className="mb-4 d-flex">
+              <Item
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                description={product.description}
+                image={product.image}
+              />
+            </Col>
+          ))
+        )}
+      </Row>
+
+      {/* Controles de Paginación */}
+      <Row className="my-4 justify-content-center">
+        <Col className="text-center d-flex justify-content-center gap-2">
+          {/* Botón "Ver menos" solo si hay más productos que los iniciales */}
+          {products.length > PRODUCTOS_POR_PAGINA && (
+            <Button variant="secondary" onClick={showLessProducts}>
+              Ver menos
+            </Button>
+          )}
+
+          {/* Botón "Cargar más" */}
+          {hasMore && (
+            <Button onClick={fetchMoreProducts} disabled={loadingMore} variant="primary">
+              {loadingMore ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  <span className="visually-hidden">Cargando...</span>
+                </>
+              ) : (
+                'Cargar más'
+              )}
+            </Button>
+          )}
+
+          {!hasMore && products.length > 0 && products.length <= PRODUCTOS_POR_PAGINA && (
+            <Alert variant="light" className="m-0">No hay más productos para mostrar.</Alert>
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

@@ -1,43 +1,40 @@
-// src/pages/ProductForm.jsx (Antes ProductCreation)
+// src/pages/ProductForm.jsx
 
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore'; // Añadimos updateDoc y doc
-import './ProductForm.css'; // Renombrado de ProductCreation.css
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import './ProductForm.css';
+import { toast } from 'react-toastify'; // <--- Importamos toast
 
-// Este componente ahora acepta un prop 'productToEdit' y una función 'onFormSubmit'
 function ProductForm({ productToEdit, onFormSubmit, onCancelEdit }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [image, setImage] = useState('');
-  const [message, setMessage] = useState('');
-  const [errors, setErrors] = useState({}); // Nuevo estado para los errores de validación
+  // const [message, setMessage] = useState(''); // Ya no necesitamos un estado local para el mensaje
+  const [errors, setErrors] = useState({});
 
-  // useEffect para rellenar el formulario cuando se selecciona un producto para editar
   useEffect(() => {
     if (productToEdit) {
       setName(productToEdit.name || '');
-      setPrice(productToEdit.price || ''); // Price puede ser number, lo dejamos así por ahora
+      setPrice(productToEdit.price || '');
       setDescription(productToEdit.description || '');
       setCategory(productToEdit.category || '');
       setImage(productToEdit.image || '');
-      setMessage(''); // Limpiar mensajes al cambiar de producto
-      setErrors({}); // Limpiar errores
+      // setMessage('');
+      setErrors({});
     } else {
-      // Si no hay producto para editar, limpiar el formulario
       setName('');
       setPrice('');
       setDescription('');
       setCategory('');
       setImage('');
-      setMessage('');
+      // setMessage('');
       setErrors({});
     }
-  }, [productToEdit]); // Este efecto se ejecuta cada vez que 'productToEdit' cambia
+  }, [productToEdit]);
 
-  // Función de validación
   const validateForm = () => {
     const newErrors = {};
     if (!name.trim()) newErrors.name = "El nombre no puede estar vacío.";
@@ -46,15 +43,15 @@ function ProductForm({ productToEdit, onFormSubmit, onCancelEdit }) {
     if (!category.trim()) newErrors.category = "La categoría no puede estar vacía.";
     if (!image.trim()) newErrors.image = "La URL de la imagen no puede estar vacía.";
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Retorna true si no hay errores
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
+    // setMessage(''); // Limpiamos el mensaje antes de una nueva acción
 
     if (!validateForm()) {
-      setMessage("Por favor, corrige los errores del formulario.");
+      toast.error("Por favor, corrige los errores del formulario."); // <--- Usamos toast
       return;
     }
 
@@ -68,16 +65,13 @@ function ProductForm({ productToEdit, onFormSubmit, onCancelEdit }) {
       };
 
       if (productToEdit) {
-        // Modo edición: actualizar producto existente
         const docRef = doc(db, 'productos', productToEdit.id);
         await updateDoc(docRef, productData);
-        setMessage("¡Producto actualizado con éxito!");
+        toast.success("¡Producto actualizado con éxito!"); // <--- Usamos toast
       } else {
-        // Modo creación: añadir nuevo producto
         const productsCollectionRef = collection(db, 'productos');
         await addDoc(productsCollectionRef, productData);
-        setMessage("¡Producto creado con éxito!");
-        // Limpiamos el formulario solo después de crear
+        toast.success("¡Producto creado con éxito!"); // <--- Usamos toast
         setName('');
         setPrice('');
         setDescription('');
@@ -85,10 +79,10 @@ function ProductForm({ productToEdit, onFormSubmit, onCancelEdit }) {
         setImage('');
       }
 
-      onFormSubmit(); // Notificar al componente padre que se ha enviado el formulario
+      onFormSubmit();
     } catch (err) {
       console.error("Error al guardar el producto:", err);
-      setMessage("Error al guardar el producto. Intenta de nuevo.");
+      toast.error("Error al guardar el producto. Intenta de nuevo."); // <--- Usamos toast
     }
   };
 
@@ -124,7 +118,8 @@ function ProductForm({ productToEdit, onFormSubmit, onCancelEdit }) {
         <button type="submit" className="submit-btn">{productToEdit ? 'Actualizar Producto' : 'Crear Producto'}</button>
         {productToEdit && <button type="button" onClick={onCancelEdit} className="cancel-edit-btn">Cancelar Edición</button>}
       </form>
-      {message && <p className={`message ${message.includes('éxito') ? 'success' : 'error'}`}>{message}</p>}
+      {/* Ya no necesitamos mostrar el mensaje aquí, Toastify lo maneja */}
+      {/* {message && <p className={`message ${message.includes('éxito') ? 'success' : 'error'}`}>{message}</p>} */}
     </div>
   );
 }

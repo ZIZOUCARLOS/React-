@@ -1,40 +1,63 @@
-// src/components/Item.jsx
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../context/CartContext'; // <--- ¡RUTA CORREGIDA! Subimos dos niveles
+import { useCart } from '../../context/CartContext';
+import { Card, Button } from 'react-bootstrap';
 import './Item.css';
+import { toast } from 'react-toastify'; // <--- Importación correcta de toast
 
-// Añadimos 'image' a las props que recibe el componente
 function Item({ id, name, price, description, image }) {
-const [quantity, setQuantity] = useState(1);
-const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
-const handleAddToCart = () => {
-  // Aseguramos que el objeto productToAdd también incluya la imagen
-  const productToAdd = { id, name, price, description, image };
-  addToCart(productToAdd, quantity);
-  alert(`Agregaste ${quantity}x ${name} al carrito.`);
-  setQuantity(1);
-};
+  const handleAddToCart = () => {
+    const productToAdd = { id, name, price, description, image };
+    addToCart(productToAdd, quantity);
+    toast.success(`Agregaste ${quantity}x ${name} al carrito.`); // <--- ¡CAMBIO AQUÍ!
+    setQuantity(1);
+  };
 
-return (
-  <div className="item-card">
-    <Link to={`/productos/${id}`} className="item-link">
-      <img src={image} alt={name} className="item-image" />
-      <h3 className="item-name">{name}</h3>
-      <p className="item-description">{description}</p>
-      <p className="item-price">${price.toFixed(2)}</p>
-    </Link>
-
-    <div className="item-quantity-controls">
-      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="quantity-btn">-</button>
-      <span className="item-quantity">{quantity}</span>
-      <button onClick={() => setQuantity(quantity + 1)} className="quantity-btn">+</button>
-    </div>
-    <button onClick={handleAddToCart} className="add-to-cart-btn">Añadir al Carrito</button>
-  </div>
-);
+  return (
+    <Card className="h-100 item-custom-card">
+      <Link to={`/productos/${id}`} className="item-link">
+        {image && <Card.Img variant="top" src={image} className="item-card-image" />}
+      </Link>
+      
+      <Card.Body className="d-flex flex-column item-card-body">
+        <Link to={`/productos/${id}`} className="item-link">
+          <Card.Title className="item-name">{name}</Card.Title>
+          <Card.Text className="item-description">{description}</Card.Text>
+          <Card.Text className="item-price mt-auto">${price.toFixed(2)}</Card.Text>
+        </Link>
+        
+        <div className="item-quantity-controls">
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+            className="quantity-btn"
+            aria-label={`Disminuir cantidad de ${name}`}
+          >-</Button>
+          <span className="item-quantity">{quantity}</span>
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={() => setQuantity(quantity + 1)} 
+            className="quantity-btn"
+            aria-label={`Aumentar cantidad de ${name}`}
+          >+</Button>
+        </div>
+        
+        <Button 
+          variant="success" 
+          className="add-to-cart-btn" 
+          onClick={handleAddToCart}
+          aria-label={`Añadir ${name} al carrito`}
+        >
+          Añadir al Carrito
+        </Button>
+      </Card.Body>
+    </Card>
+  );
 }
 
 export default Item;

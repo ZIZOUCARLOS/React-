@@ -1,94 +1,84 @@
 /* src/components/Item/Item.css */
-.item-card {
-border: 1px solid #444;
-border-radius: 8px;
-padding: 15px;
-margin: 10px;
-width: 250px;
-background-color: #333;
-text-align: center;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-transition: transform 0.2s ease-in-out;
+
+.item-custom-card {
+  border: 1px solid #444; /* Borde más oscuro */
+  border-radius: 8px;
+  background-color: #333; /* Fondo oscuro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+  color: white; /* Color de texto predeterminado */
 }
 
-.item-card:hover {
-transform: translateY(-5px);
+.item-custom-card:hover {
+  transform: translateY(-5px);
 }
 
 .item-link {
-text-decoration: none;
-color: inherit;
-flex-grow: 1;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+  text-decoration: none;
+  color: inherit; /* Hereda el color del padre */
+}
+
+.item-card-image {
+  height: 200px; /* Altura fija para las imágenes */
+  object-fit: cover; /* Recortar si es necesario */
+  border-top-left-radius: calc(8px - 1px); /* Ajustar esquinas */
+  border-top-right-radius: calc(8px - 1px);
+}
+
+.item-card-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .item-name {
-margin: 10px 0;
-color: #61dafb;
-font-size: 1.3em;
+  color: #61dafb;
+  font-size: 1.3em;
+  margin-bottom: 5px;
 }
 
 .item-description {
-color: #bbb;
-font-size: 0.9em;
-margin-bottom: 10px;
+  color: #bbb;
+  font-size: 0.9em;
+  min-height: 40px; /* Para mantener consistencia de altura */
+  margin-bottom: 10px;
 }
 
 .item-price {
-font-size: 1.3em;
-font-weight: bold;
-color: white;
-margin-top: auto;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: white;
+  margin-top: auto; /* Empuja este elemento hacia abajo si hay espacio */
 }
 
 .item-quantity-controls {
-margin-top: 15px;
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-}
-
-.item-quantity-controls .quantity-btn {
-background-color: #555;
-color: white;
-border: none;
-border-radius: 4px;
-padding: 5px 10px;
-cursor: pointer;
-font-size: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
 
 .item-quantity {
-font-size: 1.1em;
-font-weight: bold;
+  font-size: 1.1em;
+  font-weight: bold;
 }
 
+/* Los botones ya los gestiona React-Bootstrap con variant="secondary" y size="sm" */
+/* Puedes añadir estilos específicos si quieres sobreescribir Bootstrap */
+.quantity-btn {
+  width: 30px; /* Hacer los botones de cantidad más pequeños */
+  height: 30px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+}
+
+/* El botón add-to-cart-btn ya lo gestiona React-Bootstrap con variant="success" */
+/* Puedes añadir estilos específicos si quieres sobreescribir Bootstrap */
 .add-to-cart-btn {
-margin-top: 15px;
-background-color: #28a745;
-color: white;
-border: none;
-padding: 10px 15px;
-border-radius: 4px;
-cursor: pointer;
-font-size: 1em;
-width: 100%;
+  width: 100%;
 }
-/* src/components/Item.css */
-/* ... (estilos existentes) ... */
-
-.item-image {
-max-width: 100%; /* Asegura que la imagen no se salga de la tarjeta */
-height: auto; /* Mantiene la proporción */
-border-radius: 4px; /* Bordes ligeramente redondeados para la imagen */
-margin-bottom: 10px; /* Espacio debajo de la imagen */
-}
-
-/* ... (resto de estilos existentes) ... */
